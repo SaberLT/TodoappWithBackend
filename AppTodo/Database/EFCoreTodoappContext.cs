@@ -9,7 +9,7 @@ namespace AppTodo.Database
 {
     public class EFCoreTodoappContext : DbContext
     {
-        public DbSet<Snippet> Todos { get; set; }
+        public DbSet<Todo> Todos { get; set; }
         public DbSet<FocusedId> FocusedIds { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder builder)
         {

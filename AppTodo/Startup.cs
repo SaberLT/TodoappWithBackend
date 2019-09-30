@@ -27,7 +27,7 @@ namespace AppTodo
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<EFCoreTodoappContext>();
+            services.AddScoped<EFCoreTodoappContext>();
 
             services.AddCors(options =>
             {
@@ -67,7 +67,7 @@ namespace AppTodo
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseMvc(); //TODO
+            app.UseMvc();
         }
     }
 }

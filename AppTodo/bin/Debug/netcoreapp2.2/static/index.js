@@ -1,29 +1,28 @@
 $(()=>{
     const ELEMENTS_PER_PAGE = 10;
 
-    let updateModel = () => {
+    let sendModel = () => {
         let xhr = new XMLHttpRequest();
 
         let result = "";
 
-        xhr.open('GET', "http://jsonplaceholder.typicode.com/todos/1");
-
-        xhr.send();
-
-        xhr.onload = () => {
-            if (xhr.status != 200) { // analyze HTTP status of the response
-                console.log(`Error ${xhr.status}: ${xhr.statusText}`); // e.g. 404: Not Found
-            } else { // show the result
-                console.log(`Done, got ${xhr.response}`); // responseText is the server
-                result = xhr.response;
+        xhr.onreadystatechange = () => {
+            if(xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200) {
+                //finished query
+                
             }
         }
 
-        xhr.onerror = () => {
-            console.log('Request failed!')
-        }
+        xhr.open('POST', `http://localhost:50670/api/todo/updateModel`);
+        xhr.setRequestHeader("Content-type", "application/json");
 
-        console.log("Result is:", result);
+        let objToSend = {
+            todos: model.todos,
+            alreadyDone: model.alreadyDone,
+            focusedId: model.focusedId
+        }
+        let str =JSON.stringify(objToSend); 
+        xhr.send(str);
     }
 
     let headerMessageBlock = $("#todosHeaderMessage");
@@ -41,6 +40,9 @@ $(()=>{
 
     let doneEverythingButton = $("#doneEverythingButton");
     let unDoneEverythingButton = $("#undoneEverythingButton");
+
+    let saveModel = $("#saveModel");
+    let loadModel = $("#loadModel");
 
     let model = {
         todos: [],
@@ -136,8 +138,40 @@ $(()=>{
         render();
     });
 
+    loadModel.click(()=>{
+        //loading model here
+        let xhr = new XMLHttpRequest();
+
+        xhr.open('GET', "http://localhost:50670/api/todo/getModel");
+
+        xhr.send();
+
+        xhr.onload = () => {
+            if (xhr.status != 200) { 
+                console.log(`Error ${xhr.status}: ${xhr.statusText}`);
+            } else { 
+                let resp = xhr.response;
+                let resModel = JSON.parse(resp);
+                console.log(resModel);
+                // console.log("resp", resp);
+                // console.log("res", res);
+                // model = resModel
+                // console.log(model);
+                // render();
+            }
+        }
+
+        xhr.onerror = () => {
+            console.log('Request failed!')
+        }
+    });
+
+    saveModel.click(()=>{
+        sendModel();
+    });
+
     const addTodo = (todoText) => {
-        /*
+        
         if(todoText!="") {
             newTodoText.val("");
             newTodoText.focus();
@@ -151,8 +185,6 @@ $(()=>{
 
             model.updateTodoFocusedId(model.todos.length-1);
         }   
-        */     
-        updateModel();
     };
 
     const render = () => {

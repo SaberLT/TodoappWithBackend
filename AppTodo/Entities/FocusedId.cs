@@ -9,6 +9,7 @@ namespace AppTodo.Entities
     public class FocusedId : IEntity
     {
         public long Id { get; set; }
-        public int CurrentFocusedId { get; set; }
+        public int Todo { get; set; }
+        public int AlreadyDone { get; set; }
     }
 }

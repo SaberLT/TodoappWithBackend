@@ -3,14 +3,16 @@ using AppTodo.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace AppTodo.Migrations
 {
     [DbContext(typeof(EFCoreTodoappContext))]
-    partial class EFCoreTodoappContextModelSnapshot : ModelSnapshot
+    [Migration("20190930070438_TodoPlusAlreadyDone")]
+    partial class TodoPlusAlreadyDone
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,9 +26,7 @@ namespace AppTodo.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("AlreadyDone");
-
-                    b.Property<int>("Todo");
+                    b.Property<int>("CurrentFocusedId");
 
                     b.HasKey("Id");
 
@@ -41,11 +41,13 @@ namespace AppTodo.Migrations
 
                     b.Property<bool>("IsDone");
 
+                    b.Property<bool>("IsModifying");
+
                     b.Property<string>("Text");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Todos");
+                    b.ToTable("Todo");
                 });
 #pragma warning restore 612, 618
         }

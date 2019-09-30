@@ -1,29 +1,89 @@
 $(()=>{
     const ELEMENTS_PER_PAGE = 10;
 
-    let updateModel = () => {
+    let sendModel = () => {
         let xhr = new XMLHttpRequest();
 
         let result = "";
 
-        xhr.open('GET', "http://jsonplaceholder.typicode.com/todos/1");
+        xhr.onreadystatechange = () => {
+            if(xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200) {
+                //finished query
+                
+            }
+        }
+
+        xhr.open('POST', `http://localhost:50670/api/todo/updateModel`);
+        xhr.setRequestHeader("Content-type", "application/json");
+
+        let objToSend = {
+            todos: model.todos,
+            alreadyDone: model.alreadyDone,
+            focusedId: model.focusedId
+        }
+        let str =JSON.stringify(objToSend); 
+        xhr.send(str);
+    }
+
+    let loadData = () => {
+        if(model.todos.length!=0 || model.alreadyDone.length!=0){
+            let userAnswer = prompt("Are you sure to perform this action??? All unsaved data might be lost! (Y/N)", "N")
+            if(!(userAnswer==="Y" || userAnswer==="y"))
+                return; 
+        }
+
+        let xhr = new XMLHttpRequest();
+
+        xhr.open('GET', "http://localhost:50670/api/todo/getModel");
 
         xhr.send();
 
         xhr.onload = () => {
-            if (xhr.status != 200) { // analyze HTTP status of the response
-                console.log(`Error ${xhr.status}: ${xhr.statusText}`); // e.g. 404: Not Found
-            } else { // show the result
-                console.log(`Done, got ${xhr.response}`); // responseText is the server
-                result = xhr.response;
+            if (xhr.status != 200) { 
+                console.log(`Error ${xhr.status}: ${xhr.statusText}`);
+            } else { 
+                let resp = xhr.response;
+                let resModel = JSON.parse(resp);
+                model= {
+                    ...resModel,
+
+                    updateTodos : (newTodos) => {
+                        if(newTodos===null) throw "newTodos are empty!";
+                        this.todos = newTodos;
+                        render();
+                    },
+
+                    updateAlreadyDone : (newAlreadyDone) => {
+                        if(newAlreadyDone===null) throw "newAlreadyDone are empty!";
+                        this.alreadyDone = newAlreadyDone;
+                        render();
+                    },
+
+                    updateTodoFocusedId : (newId) => {
+                        if(newId > this.todos.length-1 ) newId = this.todos.length-1;
+                        if(newId < 0) newId = 0;
+
+                        model.focusedId.todos = newId;
+
+                        render();
+                    },
+
+                    updateAlreadyDoneFocusedId : (newId) => {
+                        if(newId > this.alreadyDone.length-1 ) newId = this.alreadyDone.length-1;
+                        if(newId < 0) newId = 0;
+
+                        model.focusedId.alreadyDone = newId;
+
+                        render();
+                    },
+                };
+                render();
             }
         }
 
         xhr.onerror = () => {
             console.log('Request failed!')
         }
-
-        console.log("Result is:", result);
     }
 
     let headerMessageBlock = $("#todosHeaderMessage");
@@ -41,6 +101,9 @@ $(()=>{
 
     let doneEverythingButton = $("#doneEverythingButton");
     let unDoneEverythingButton = $("#undoneEverythingButton");
+
+    let saveModel = $("#saveModel");
+    let loadModel = $("#loadModel");
 
     let model = {
         todos: [],
@@ -136,8 +199,16 @@ $(()=>{
         render();
     });
 
+    loadModel.click(()=>{
+        loadData();
+    });
+
+    saveModel.click(()=>{
+        sendModel();
+    });
+
     const addTodo = (todoText) => {
-        /*
+        
         if(todoText!="") {
             newTodoText.val("");
             newTodoText.focus();
@@ -151,8 +222,6 @@ $(()=>{
 
             model.updateTodoFocusedId(model.todos.length-1);
         }   
-        */     
-        updateModel();
     };
 
     const render = () => {
@@ -454,4 +523,6 @@ $(()=>{
             </div>`;
         }
     };
+
+    loadData();
 });

@@ -3,14 +3,16 @@ using AppTodo.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace AppTodo.Migrations
 {
     [DbContext(typeof(EFCoreTodoappContext))]
-    partial class EFCoreTodoappContextModelSnapshot : ModelSnapshot
+    [Migration("20190930074534_removedismodifying")]
+    partial class removedismodifying
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

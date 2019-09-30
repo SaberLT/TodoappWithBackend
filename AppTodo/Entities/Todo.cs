@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace AppTodo.Entities
 {
-    public class Snippet : IEntity
+    public class Todo : IEntity
     {
         public long Id { get; set; }
         public string Text { get; set; }
-        public bool IsModifying { get; set; } 
+        public bool IsDone { get; set; }
     }
 }
