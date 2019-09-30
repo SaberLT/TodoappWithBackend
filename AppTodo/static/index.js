@@ -1,8 +1,17 @@
 $(()=>{
     const ELEMENTS_PER_PAGE = 10;
 
+    $(document).on('click', '.contextChanged', ()=>{
+        sendModel();
+    });
+
+    $(document).on('keypress', '.contextModified', (e) => {
+        if(e.which == 13) {
+            sendModel();
+        }                
+    });
+
     let sendModel = () => {
-        console.log("Sending data to server...");
 
         let xhr = new XMLHttpRequest();
 
@@ -87,6 +96,7 @@ $(()=>{
         }
     }
 
+    let appBlock = $("#app");
     let headerMessageBlock = $("#todosHeaderMessage");
     let todosBlock = $("#todos");
     let alreadyDoneBlock = $("#alreadyDone");
@@ -102,9 +112,6 @@ $(()=>{
 
     let doneEverythingButton = $("#doneEverythingButton");
     let unDoneEverythingButton = $("#undoneEverythingButton");
-
-    let contextChangedItems = $(".contextChanged");
-    let contextModifiedItems = $(".contextModified");
 
     let model = {
         todos: [],
@@ -216,12 +223,7 @@ $(()=>{
 
             model.updateTodoFocusedId(model.todos.length-1);
         }   
-        sendModel();
     };
-
-    contextChangedItems.click(()=>{
-        sendModel();
-    });
 
     const render = () => {
         clearEverything();
@@ -263,7 +265,6 @@ $(()=>{
                 let todos = model.todos;
                 todos[id].isModifying = false;
                 model.updateTodos(todos);
-                sendModel();
             };
             
             if(!item.isModifying)
@@ -312,7 +313,6 @@ $(()=>{
                 model.updateTodos(todos);
                 model.updateTodoFocusedId(id);
 
-                sendModel();
             });
 
             $(`#todoItemDoneButton${id}`).click(() => {
@@ -325,7 +325,6 @@ $(()=>{
                 model.updateTodoFocusedId(model.todos.length-1);
                 model.updateAlreadyDoneFocusedId(model.alreadyDone.length-1);
                 
-                sendModel();
             });
 
             
@@ -347,7 +346,6 @@ $(()=>{
                 let alreadyDone = model.alreadyDone;
                 alreadyDone[id].isModifying = false;
                 model.updateAlreadyDone(alreadyDone);
-                sendModel();
             };
             
             let todoInput = $(`#doneTodoItemInput${id}`);
@@ -386,7 +384,6 @@ $(()=>{
                 alreadyDone[id].text = todoInput.val();
                 model.updateAlreadyDone(alreadyDone);
                 
-                sendModel();
                 todoInput.focus();
             });
             
@@ -396,7 +393,6 @@ $(()=>{
                 model.updateTodos(alreadyDone);
                 model.updateAlreadyDoneFocusedId(id);
 
-                sendModel();
             });
 
             $(`#doneTodoItemUndoneButton${id}`).click(() => {
@@ -409,7 +405,6 @@ $(()=>{
                 model.updateTodoFocusedId(model.todos.length-1);
                 model.updateAlreadyDoneFocusedId(model.alreadyDone.length-1);
 
-                sendModel();
             });
         });
     };
@@ -431,7 +426,6 @@ $(()=>{
             currentButton.click(() => {
                 model.updateTodoFocusedId(i*ELEMENTS_PER_PAGE);
                 
-                sendModel();
             })
         }
     };
@@ -453,7 +447,6 @@ $(()=>{
             currentButton.click(() => {
                 model.updateAlreadyDoneFocusedId(i*ELEMENTS_PER_PAGE);
                 
-                sendModel();
             });
         }
     };
@@ -535,6 +528,6 @@ $(()=>{
         }
     };
 
-
     loadData();
+
 });

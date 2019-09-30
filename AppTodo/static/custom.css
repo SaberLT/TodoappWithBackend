@@ -44,3 +44,7 @@ button.btn-context {
 .btn.btn-pagination::after {
     opacity: 0;
 }
+
+.contextChanged {
+    opacity: 1;
+}
