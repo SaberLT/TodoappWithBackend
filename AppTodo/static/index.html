@@ -47,7 +47,7 @@
                     <div class="col">
                         <div class="d-flex flex-fill justify-content-center">
                             <input type="text" id="newTodoText" class="form-inline" placeholder="Enter todo text here"/>
-                            <button class="btn btn-outline-primary btn-square" id="addTodoButton" >Add Todo</button>
+                            <button class="btn btn-outline-primary btn-square contextChanged" id="addTodoButton" >Add Todo</button>
                         </div>
                     </div>
                 </div>
@@ -57,9 +57,9 @@
                             <p class="lead">Remove Actions:</p>
                         </div>
                         <div class="row">
-                            <button class="btn btn-outline-danger btn-square btn-square-fixed-borders" id="removeEverythingButton">Remove Everything</button>
-                            <button class="btn btn-outline-danger btn-square btn-square-fixed-borders" id="removeTodosButton">Remove Todos</button>
-                            <button class="btn btn-outline-danger btn-square btn-square-fixed-borders" id="removeDoneTodosButton">Remove Done Todos</button>
+                            <button class="btn btn-outline-danger btn-square btn-square-fixed-borders contextChanged" id="removeEverythingButton">Remove Everything</button>
+                            <button class="btn btn-outline-danger btn-square btn-square-fixed-borders contextChanged" id="removeTodosButton">Remove Todos</button>
+                            <button class="btn btn-outline-danger btn-square btn-square-fixed-borders contextChanged" id="removeDoneTodosButton">Remove Done Todos</button>
                         </div>
                     </div>
                 </div>
@@ -69,8 +69,8 @@
                             <p class="lead">Done/Undone Actions:</p>
                         </div>
                         <div class="row">
-                            <button class="btn btn-outline-info btn-square btn-square-fixed-borders" id="doneEverythingButton">Done Everything</button>
-                            <button class="btn btn-outline-info btn-square btn-square-fixed-borders" id="undoneEverythingButton">Undone Everything</button>
+                            <button class="btn btn-outline-info btn-square btn-square-fixed-borders contextChanged" id="doneEverythingButton">Done Everything</button>
+                            <button class="btn btn-outline-info btn-square btn-square-fixed-borders contextChanged" id="undoneEverythingButton">Undone Everything</button>
                         </div>
                     </div>
                 </div>
@@ -80,14 +80,11 @@
                             <p class="lead">Server Iterractions</p>
                         </div>
                         <div class="row">
-                            <button class="btn btn-outline-success btn-square" id="saveModel">Save Changes</button>
                             <button class="btn btn-outline-danger btn-square btn-square-fixed-borders" id="loadModel">Load data</button>
                         </div>
                     </div>
                 </div>
             </div>
-
-            
         </div>
 
         <!-- Bootstrap -->

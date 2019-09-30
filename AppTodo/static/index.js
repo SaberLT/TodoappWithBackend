@@ -2,6 +2,8 @@ $(()=>{
     const ELEMENTS_PER_PAGE = 10;
 
     let sendModel = () => {
+        console.log("Sending data to server...");
+
         let xhr = new XMLHttpRequest();
 
         let result = "";
@@ -9,7 +11,6 @@ $(()=>{
         xhr.onreadystatechange = () => {
             if(xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200) {
                 //finished query
-                
             }
         }
 
@@ -102,8 +103,8 @@ $(()=>{
     let doneEverythingButton = $("#doneEverythingButton");
     let unDoneEverythingButton = $("#undoneEverythingButton");
 
-    let saveModel = $("#saveModel");
-    let loadModel = $("#loadModel");
+    let contextChangedItems = $(".contextChanged");
+    let contextModifiedItems = $(".contextModified");
 
     let model = {
         todos: [],
@@ -117,12 +118,14 @@ $(()=>{
         updateTodos : (newTodos) => {
             if(newTodos===null) throw "newTodos are empty!";
             this.todos = newTodos;
+            
             render();
         },
 
         updateAlreadyDone : (newAlreadyDone) => {
             if(newAlreadyDone===null) throw "newAlreadyDone are empty!";
             this.alreadyDone = newAlreadyDone;
+
             render();
         },
 
@@ -199,16 +202,7 @@ $(()=>{
         render();
     });
 
-    loadModel.click(()=>{
-        loadData();
-    });
-
-    saveModel.click(()=>{
-        sendModel();
-    });
-
     const addTodo = (todoText) => {
-        
         if(todoText!="") {
             newTodoText.val("");
             newTodoText.focus();
@@ -222,7 +216,12 @@ $(()=>{
 
             model.updateTodoFocusedId(model.todos.length-1);
         }   
+        sendModel();
     };
+
+    contextChangedItems.click(()=>{
+        sendModel();
+    });
 
     const render = () => {
         clearEverything();
@@ -264,6 +263,7 @@ $(()=>{
                 let todos = model.todos;
                 todos[id].isModifying = false;
                 model.updateTodos(todos);
+                sendModel();
             };
             
             if(!item.isModifying)
@@ -310,8 +310,9 @@ $(()=>{
                 let todos = model.todos;
                 todos.splice(id, 1);
                 model.updateTodos(todos);
-
                 model.updateTodoFocusedId(id);
+
+                sendModel();
             });
 
             $(`#todoItemDoneButton${id}`).click(() => {
@@ -323,6 +324,8 @@ $(()=>{
                 model.updateAlreadyDone(alreadyDone);
                 model.updateTodoFocusedId(model.todos.length-1);
                 model.updateAlreadyDoneFocusedId(model.alreadyDone.length-1);
+                
+                sendModel();
             });
 
             
@@ -344,6 +347,7 @@ $(()=>{
                 let alreadyDone = model.alreadyDone;
                 alreadyDone[id].isModifying = false;
                 model.updateAlreadyDone(alreadyDone);
+                sendModel();
             };
             
             let todoInput = $(`#doneTodoItemInput${id}`);
@@ -382,6 +386,7 @@ $(()=>{
                 alreadyDone[id].text = todoInput.val();
                 model.updateAlreadyDone(alreadyDone);
                 
+                sendModel();
                 todoInput.focus();
             });
             
@@ -389,8 +394,9 @@ $(()=>{
                 let alreadyDone = model.alreadyDone;
                 alreadyDone.splice(id, 1);
                 model.updateTodos(alreadyDone);
-
                 model.updateAlreadyDoneFocusedId(id);
+
+                sendModel();
             });
 
             $(`#doneTodoItemUndoneButton${id}`).click(() => {
@@ -402,6 +408,8 @@ $(()=>{
                 model.updateAlreadyDone(alreadyDone);
                 model.updateTodoFocusedId(model.todos.length-1);
                 model.updateAlreadyDoneFocusedId(model.alreadyDone.length-1);
+
+                sendModel();
             });
         });
     };
@@ -422,6 +430,8 @@ $(()=>{
             let currentButton = $(`#todoPaginationButton${i}`);
             currentButton.click(() => {
                 model.updateTodoFocusedId(i*ELEMENTS_PER_PAGE);
+                
+                sendModel();
             })
         }
     };
@@ -441,8 +451,9 @@ $(()=>{
 
             let currentButton = $(`#doneTodoPaginationButton${i}`);
             currentButton.click(() => {
-                console.log(i);
                 model.updateAlreadyDoneFocusedId(i*ELEMENTS_PER_PAGE);
+                
+                sendModel();
             });
         }
     };
@@ -455,9 +466,9 @@ $(()=>{
                     <div class="border border-info">
                         <div class="input-group">
                             <div class="input-group flex-fill">
-                                <input class="form-control input-modifying" id="todoItemInput${itemId}" value="${todoItem.text}"/>
+                                <input class="form-control input-modifying contextModified" id="todoItemInput${itemId}" value="${todoItem.text}"/>
                                 <div class="input-group-append d-block d-sm-none d-md-none">
-                                    <button class="btn btn-success btn-square btn-context" id="todoItemOKButton${itemId}">&#10003;</button>
+                                    <button class="btn btn-success btn-square btn-context contextChanged" id="todoItemOKButton${itemId}">&#10003;</button>
                                 </div>
                             </div>
                         </div>
@@ -474,8 +485,8 @@ $(()=>{
                                 <input class="form-control input-modifying" id="todoItemInput${itemId}" disabled value="${todoItem.text}"/>
                                 <div class="input-group-append">
                                     <button class="btn btn-info btn-square btn-context" id="todoItemModifyButton${itemId}">&#128393;</button>
-                                    <button class="btn btn-danger btn-square btn-context" id="todoItemRemoveButton${itemId}">&#9932;</button>
-                                    <button class="btn btn-info btn-square btn-context" id="todoItemDoneButton${itemId}">&#8594;</button>
+                                    <button class="btn btn-danger btn-square btn-context contextChanged" id="todoItemRemoveButton${itemId}">&#9932;</button>
+                                    <button class="btn btn-info btn-square btn-context contextChanged" id="todoItemDoneButton${itemId}">&#8594;</button>
                                 </div>
                             </div>
                         </div>
@@ -493,10 +504,10 @@ $(()=>{
                     <div class="border border-info">
                         <div class="input-group">
                             <div class="input-group flex-fill">
-                                <button class="btn btn-info btn-square btn-context" id="doneTodoItemUndoneButton${itemId}">&#8592;</button>
-                                <input class="form-control" id="doneTodoItemInput${itemId}" value="${todoItem.text}"/>
+                                <button class="btn btn-info btn-square btn-context contextChanged" id="doneTodoItemUndoneButton${itemId}">&#8592;</button>
+                                <input class="form-control contextModified input-modifying" id="doneTodoItemInput${itemId}" value="${todoItem.text}"/>
                                 <div class="input-group-append d-block d-sm-none d-md-none">
-                                    <button class="btn btn-success btn-square btn-context" id="doneTodoItemOKButton${itemId}">&#10003;</button>
+                                    <button class="btn btn-success btn-square btn-context contextChanged" id="doneTodoItemOKButton${itemId}">&#10003;</button>
                                 </div>
                             </div>
                         </div>
@@ -510,11 +521,11 @@ $(()=>{
                     <div class="border border-info todo-item">
                         <div class="input-group">
                             <div class="input-group flex-fill">
-                                <button class="btn btn-info btn-square btn-context" id="doneTodoItemUndoneButton${itemId}">&#8592;</button>
+                                <button class="btn btn-info btn-square btn-context contextChanged" id="doneTodoItemUndoneButton${itemId}">&#8592;</button>
                                 <input class="form-control input-modifying" id="doneTodoItemInput${itemId}" disabled value="${todoItem.text}"/>
                                 <div class="input-group-append">
                                     <button class="btn btn-info btn-square btn-context" id="doneTodoItemModifyButton${itemId}">&#128393;</button>
-                                    <button class="btn btn-danger btn-square btn-context" id="doneTodoItemRemoveButton${itemId}">&#9932;</button>
+                                    <button class="btn btn-danger btn-square btn-context contextChanged" id="doneTodoItemRemoveButton${itemId}">&#9932;</button>
                                 </div>
                             </div>
                         </div>
@@ -523,6 +534,7 @@ $(()=>{
             </div>`;
         }
     };
+
 
     loadData();
 });
